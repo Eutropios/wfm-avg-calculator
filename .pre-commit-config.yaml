@@ -1,4 +1,9 @@
 repos:
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.12.1
+    hooks:
+      - id: markdownlint-cli2
+
   - repo: https://github.com/abravalheri/validate-pyproject
     rev: "v0.16"
     hooks:
@@ -12,7 +17,7 @@ repos:
         args: [-i]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.2.0"
+    rev: "v0.2.2"
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]

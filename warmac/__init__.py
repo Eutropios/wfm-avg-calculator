@@ -16,23 +16,22 @@ External packages required: urllib3
 
 from __future__ import annotations
 
-import argparse  # noqa: TCH003
 import sys
-from typing import Literal
+from typing import TYPE_CHECKING
 
-from urllib3 import exceptions
+import urllib3
 
-from warmac import cli_parser, warmac_average, warmac_errors
+from warmac import cli_parser, warmac_avg, warmac_errors
 
-__all__ = [
-    "cli_parser",
-    "warmac_average",
-    "warmac_errors",
-]
+if TYPE_CHECKING:
+    import argparse
+    from typing import Literal
+
+__all__ = ["cli_parser", "warmac_avg", "warmac_errors"]
 
 #: A dictionary of all possible commands
 SUBCMD_TO_FUNC = {
-    "average": warmac_average.average,
+    "average": warmac_avg.average,
 }
 
 
@@ -54,14 +53,14 @@ def command_select(args: argparse.Namespace) -> None:
         raise warmac_errors.CommandError from err
     except warmac_errors.WarMACBaseError as e:
         print(e)
-    except exceptions.MaxRetryError:
+    except urllib3.exceptions.MaxRetryError:
         print(
             "You're not connected to the internet. Please check your internet "
             "connection and try again.",
         )
-    except exceptions.TimeoutError:
+    except urllib3.exceptions.TimeoutError:
         print("The connection timed out. Please try again later.")
-    except exceptions.HTTPError:
+    except urllib3.exceptions.HTTPError:
         print("Unknown connection error.")
 
 

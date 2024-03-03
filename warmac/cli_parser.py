@@ -17,13 +17,16 @@ import argparse
 import contextlib
 import shutil
 import sys
-from collections.abc import Generator  # noqa: TCH003
-from typing import NoReturn
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
+    from typing import Final, NoReturn
 
 #: The default time to collect orders until
-DEFAULT_TIME = 10
+DEFAULT_TIME: Final = 10
 #: The current version of WarMAC
-_VERSION = "0.0.5"
+_VERSION: Final = "0.0.5"
 
 
 class CustomHelpFormat(argparse.RawDescriptionHelpFormatter):
@@ -126,20 +129,20 @@ class CustomHelpFormat(argparse.RawDescriptionHelpFormatter):
 
 def _int_checking(usr_inp: str, max_val: int) -> int:
     """
-    Return ``usr_inp`` as an integer if ``0 < usr_inp < max_val``.
+    Return ``usr_inp`` as an integer if ``0 <= usr_inp < max_val``.
 
     Cast ``usr_inp`` to an integer. If ``usr_inp`` is not an integer or
-    is not ``0 < usr_inp < max_val``, then raise an
+    is not ``0 < usr_inp <= max_val``, then raise an
     :py:exc:`argparse.ArgumentTypeError`.
 
     :param usr_inp: The user's input as a string.
     :param max_val: The maximum value that ``int(usr_inp)`` can be.
     :raises argparse.ArgumentTypeError: Raised if ``usr_inp`` is not an
-        integer or is not ``0 < int(usr_inp) < max_val``.
+        integer or is not ``0 < int(usr_inp) <= max_val``.
     :return: Return ``usr_inp`` as an integer.
     """
     with contextlib.suppress(ValueError):
-        if 0 < (casted_int := int(usr_inp)) < max_val:
+        if 0 < (casted_int := int(usr_inp)) <= max_val:
             return casted_int
     msg = f'Input "{usr_inp}" must be an integer between 1 and {max_val}.'
     raise argparse.ArgumentTypeError(msg)
@@ -166,6 +169,8 @@ class WarMACParser(argparse.ArgumentParser):
         :return: A value is never returned by this function.
         """
         self.exit(2, f"{self.usage}: error: {message}\n")
+        # change above code to print to stderr, then print cli help to
+        # stdout, then exit with code 2
 
 
 def _create_parser() -> WarMACParser:
@@ -179,11 +184,11 @@ def _create_parser() -> WarMACParser:
     :return: The constructed :py:class:`.WarMACParser` object.
     """
     # Min width that help text should take up in usage
-    help_min_width = 34
+    help_min_width: Final = 34
     # Min value of help_min_width and terminal's width
-    default_width = min(help_min_width, shutil.get_terminal_size().columns - 2)
+    default_width: Final = min(help_min_width, shutil.get_terminal_size().columns - 2)
     # Platforms the user can choose from
-    platforms = ("pc", "ps4", "xbox", "switch")
+    platforms: Final = ("pc", "ps4", "xbox", "switch")
 
     parser = WarMACParser(
         usage="warmac <command> [options]",
@@ -337,15 +342,14 @@ def _create_parser() -> WarMACParser:
     )
 
     avg_parser.add_argument(
-        "-v",
-        "--verbose",
-        action="count",
-        default=0,
+        "-d",
+        "--detailed-report",
+        action="store_true",
         help=(
             "Print additional market information about the requested item, along with "
             "the specified parameters."
         ),
-        dest="verbose",
+        dest="detailed_report",
     )
 
     avg_parser.add_argument(

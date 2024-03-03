@@ -35,32 +35,33 @@
     readme = "README.md"
     repository = "https://github.com/Eutropios/WarMAC"
     version = "0.0.5"
-[tool.poetry.dependencies]
-    python  = ">=3.8,<3.13"
-    urllib3 = "^2.0.4"
-[tool.poetry.scripts]
-    warmac = "warmac.__init__:console_main"
-[tool.poetry.urls]
-    "Bug Tracker" = "https://github.com/Eutropios/WarMAC/issues"
+    [tool.poetry.dependencies]
+        python  = ">=3.8,<3.13"
+        urllib3 = "^2.0.4"
+    [tool.poetry.scripts]
+        warmac = "warmac.__init__:console_main"
+    [tool.poetry.urls]
+        "Bug Tracker" = "https://github.com/Eutropios/WarMAC/issues"
+    [tool.poetry.group.dev]
+        optional = true
+        [tool.poetry.group.dev.dependencies]
+            esbonio    = ">=0.16,<1"
+            pipdeptree = "^2.13"
+            vermin     = "^1.6"
+            viztracer  = ">=0.16,<1"
 [tool.poetry.group.docs]
     optional = true
-[tool.poetry.group.docs.dependencies]
-    esbonio = "*"
-    furo = ">=2023.9"
-    sphinx = [ # 6 is lower bound because of furo
-        {version = ">=6,<7.2", python = "~3.8"},
-        {version = ">=6,<8", python = ">=3.9,<3.13"},
-    ]
-    sphinx-copybutton = ">=0.5.2,<1"
-    sphinx-inline-tabs = ">=2023.4.21"
-    sphinx-notfound-page = "^1"
-    sphinx_last_updated_by_git = ">=0.3.6,<1"
-[tool.poetry.group.dev]
-    optional = true
-[tool.poetry.group.dev.dependencies]
-    pipdeptree = "^2.13"
-    vermin     = "^1.6"
-    viztracer  = ">=0.16,<1"
+    [tool.poetry.group.docs.dependencies]
+        furo = ">=2023.9"
+        sphinx = [
+            {version = ">=6,<7.2", python = "~3.8"},
+            {version = ">=6,<8", python = ">=3.9,<3.13"},
+        ]
+        sphinx-copybutton = ">=0.5.2,<1"
+        sphinx-inline-tabs = ">=2023.4.21"
+        sphinx-lint = ">=0.9,<1"
+        sphinx-notfound-page = "^1"
+        sphinx_last_updated_by_git = ">=0.3.6,<1"
 
 [tool.docformatter]
     black               = true
@@ -87,78 +88,75 @@
     strict = true
 
 [tool.ruff]
-    explicit-preview-rules = false
-    ignore = [
-        "AIR",
-        "ANN101",
-        "COM812",
-        "DJ",
-        "ERA001",
-        "FIX",
-        "ISC001",
-        "ISC002",
-        "NPY",
-        "PD",
-        "SLF001",
-        "T20",
-    ]
-    indent-width = 4
-    line-length = 88
-    preview = true
-    select = ["ALL"]
-    show-fixes = true
+    indent-width   = 4
+    line-length    = 88
+    preview        = true
+    show-fixes     = true
     target-version = "py38"
 
-[tool.ruff.flake8-copyright]
-    author = "Noah Jenner"
+    [tool.ruff.format]
+        exclude = [
+            ".git",
+            ".hg",
+            ".mypy_cache",
+            ".tox",
+            ".venv",
+            "_build",
+            "buck-out",
+            "build",
+            "dist",
+            "ruff_cache",
+        ]
+        indent-style = "space"
+        line-ending = "auto"
+        quote-style = "double"
+        skip-magic-trailing-comma = false
 
-[tool.ruff.flake8-implicit-str-concat]
-    allow-multiline = true
+    [tool.ruff.lint]
+        explicit-preview-rules = false
+        ignore = [
+            "AIR",
+            "COM812",
+            "DJ",
+            "ERA001",
+            "FIX",
+            "ISC001",
+            "ISC002",
+            "NPY",
+            "PD",
+            "SLF001",
+            "T20",
+        ]
+        select = ["ALL"]
 
-[tool.ruff.flake8-quotes]
-    docstring-quotes = "double"
-    inline-quotes    = "double"
-    multiline-quotes = "double"
+        [tool.ruff.lint.flake8-copyright]
+            author = "Noah Jenner"
 
-[tool.ruff.format]
-    exclude = [
-        ".git",
-        ".hg",
-        ".mypy_cache",
-        ".tox",
-        ".venv",
-        "_build",
-        "buck-out",
-        "build",
-        "dist",
-        "ruff_cache",
-    ]
-    indent-style = "space"
-    line-ending = "auto"
-    quote-style = "double"
-    skip-magic-trailing-comma = false
+        [tool.ruff.lint.flake8-implicit-str-concat]
+            allow-multiline = true
 
-[tool.ruff.flake8-type-checking]
-    exempt-modules = ["typing"]
-    strict         = true
+        [tool.ruff.lint.flake8-quotes]
+            docstring-quotes = "double"
+            inline-quotes    = "double"
+            multiline-quotes = "double"
 
-[tool.ruff.isort]
-    required-imports = ["from __future__ import annotations"]
+        [tool.ruff.lint.flake8-type-checking]
+            strict = true
 
-[tool.ruff.per-file-ignores]
-    "docs/source/conf.py" = ["D100", "D104", "I002", "INP001"]
-    "tests/__init__.py"   = ["D100", "D104", "I002"]
-    "warmac/__main__.py"  = ["D100", "D104", "I002"]
+        [tool.ruff.lint.isort]
+            required-imports = ["from __future__ import annotations"]
 
-[tool.ruff.pycodestyle]
-    max-doc-length = 72
+        [tool.ruff.lint.mccabe]
+            max-complexity = 7
 
-[tool.ruff.pydocstyle]
-    # waiting on sphinx convention being added
-    convention = "pep257"
+        [tool.ruff.lint.per-file-ignores]
+            "docs/source/conf.py" = ["D100", "D104", "I002", "INP001"]
+            "tests/__init__.py"   = ["D100", "D104", "I002"]
+            "warmac/__main__.py"  = ["D100", "D104", "I002"]
 
-[tool.ruff.lint.mccabe]
-    max-complexity = 7
+        [tool.ruff.lint.pycodestyle]
+            max-doc-length = 72
 
-[tool.ruff.lint.flake8-type-checking]
-    strict = true
+        [tool.ruff.lint.pydocstyle]
+            # waiting on sphinx convention being added
+            convention = "pep257"
