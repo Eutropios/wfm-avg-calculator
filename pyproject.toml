@@ -22,24 +22,19 @@
     description = "An average platinum price calculator for tradeable items in Warframe."
     documentation = "https://warmac.readthedocs.io/en/"
     # include = [""]
-    keywords = [
-        "platinum",
-        "warframe calculator",
-        "warframe market",
-        "warframe",
-    ]
-    license = "MIT"
+    keywords    = ["platinum", "warframe calculator", "warframe market", "warframe"]
+    license     = "MIT"
     maintainers = ["Noah Jenner <noah.jenner@proton.me>"]
-    name = "WarMAC"
-    packages = [{include = "warmac"}]
-    readme = "README.md"
-    repository = "https://github.com/Eutropios/WarMAC"
-    version = "0.0.5"
+    name        = "WarMAC"
+    packages    = [{include = "warmac"}]
+    readme      = "README.md"
+    repository  = "https://github.com/Eutropios/WarMAC"
+    version     = "0.0.5"
     [tool.poetry.dependencies]
         python  = ">=3.8,<3.13"
         urllib3 = "^2.0.4"
     [tool.poetry.scripts]
-        warmac = "warmac.__init__:console_main"
+        warmac = "warmac.__init__:main"
     [tool.poetry.urls]
         "Bug Tracker" = "https://github.com/Eutropios/WarMAC/issues"
     [tool.poetry.group.dev]
@@ -47,6 +42,7 @@
         [tool.poetry.group.dev.dependencies]
             esbonio    = ">=0.16,<1"
             pipdeptree = "^2.13"
+            pytest     = "^8"
             vermin     = "^1.6"
             viztracer  = ">=0.16,<1"
 [tool.poetry.group.docs]
@@ -73,16 +69,32 @@
 
 [tool.mypy]
     exclude = [
-        '\.git',
-        '\.hg',
-        '\.mypy_cache',
-        '\.ruff_cache',
-        '\.tox',
-        '\.venv',
-        '_build',
-        'buck-out',
-        'build',
-        'dist',
+        ".bzr",
+        ".direnv",
+        ".eggs",
+        ".git",
+        ".git-rewrite",
+        ".hg",
+        ".ipynb_checkpoints",
+        ".mypy_cache",
+        ".nox",
+        ".pants.d",
+        ".pyenv",
+        ".pytest_cache",
+        ".pytype",
+        ".ruff_cache",
+        ".svn",
+        ".tox",
+        ".venv",
+        ".vscode",
+        "__pypackages__",
+        "_build",
+        "buck-out",
+        "build",
+        "dist",
+        "node_modules",
+        "site-packages",
+        "venv",
     ]
     python_version = "3.12"
     strict = true
@@ -96,16 +108,32 @@
 
     [tool.ruff.format]
         exclude = [
+            ".bzr",
+            ".direnv",
+            ".eggs",
             ".git",
+            ".git-rewrite",
             ".hg",
+            ".ipynb_checkpoints",
             ".mypy_cache",
+            ".nox",
+            ".pants.d",
+            ".pyenv",
+            ".pytest_cache",
+            ".pytype",
+            ".ruff_cache",
+            ".svn",
             ".tox",
             ".venv",
+            ".vscode",
+            "__pypackages__",
             "_build",
             "buck-out",
             "build",
             "dist",
-            "ruff_cache",
+            "node_modules",
+            "site-packages",
+            "venv",
         ]
         indent-style = "space"
         line-ending = "auto"

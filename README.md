@@ -167,7 +167,8 @@ found [here](https://warmac.readthedocs.io/en/).
 ## Contributing<a id="contributing"></a>
 
 Contributions are welcome. The expected development stack that you will use
-consists of `docformatter`, `mypy`, and `ruff`. Please see [`pyproject.toml`](https://github.com/Eutropios/WarMAC/blob/main/pyproject.toml)
+consists of `docformatter`, `mypy`, and `ruff`. You may run pre-commit hooks
+yourself, though it is not necessary. Please see [`pyproject.toml`](https://github.com/Eutropios/WarMAC/blob/main/pyproject.toml)
 for the appropriate configuration of each tool.
 
 ### Testing

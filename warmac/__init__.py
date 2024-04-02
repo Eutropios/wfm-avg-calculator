@@ -30,9 +30,9 @@ if TYPE_CHECKING:
 __all__ = ["cli_parser", "warmac_avg", "warmac_errors"]
 
 #: A dictionary of all possible commands
-SUBCMD_TO_FUNC = {
-    "average": warmac_avg.average,
-}
+# SUBCMD_TO_FUNC = {
+#    "average": warmac_avg.average,
+# }
 
 
 def command_select(args: argparse.Namespace) -> None:
@@ -47,24 +47,9 @@ def command_select(args: argparse.Namespace) -> None:
     :raises warmac_errors.CommandError: An error indicating that the
         desired command does not exist in :py:data:`.SUBCMD_TO_FUNC`.
     """
-    try:
-        SUBCMD_TO_FUNC[args.subparser](args)
-    except KeyError as err:
-        raise warmac_errors.CommandError from err
-    except warmac_errors.WarMACBaseError as e:
-        print(e)
-    except urllib3.exceptions.MaxRetryError:
-        print(
-            "You're not connected to the internet. Please check your internet "
-            "connection and try again.",
-        )
-    except urllib3.exceptions.TimeoutError:
-        print("The connection timed out. Please try again later.")
-    except urllib3.exceptions.HTTPError:
-        print("Unknown connection error.")
 
 
-def console_main() -> Literal[0]:
+def main() -> Literal[0]:
     """
     Create a :py:data:`cli_parser.WarMACParser` and run associated
     command.
@@ -81,4 +66,4 @@ def console_main() -> Literal[0]:
 
 
 if __name__ == "__main__":
-    sys.exit(console_main())
+    sys.exit(main())
