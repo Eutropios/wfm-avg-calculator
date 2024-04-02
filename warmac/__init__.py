@@ -19,8 +19,6 @@ from __future__ import annotations
 import sys
 from typing import TYPE_CHECKING
 
-import urllib3
-
 from warmac import cli_parser, warmac_avg, warmac_errors
 
 if TYPE_CHECKING:
