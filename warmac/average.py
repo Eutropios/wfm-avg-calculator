@@ -1,6 +1,6 @@
 """
-warmac.__main__
-~~~~~~~~~~~~~~~
+warmac.average
+~~~~~~~~~~~~~~
 
 WarMAC — https://github.com/Eutropios/WarMAC
 Copyright (C) 2024  Noah Jenner
@@ -20,11 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 -----------------------------------------------------------------------
 
-Entry point for console when `python -m warmac` is called.
+Logic for average subcommand.
 """  # noqa: D205, D400
 
-import sys
-
-from warmac import main
-
-sys.exit(main.main())
+from __future__ import annotations

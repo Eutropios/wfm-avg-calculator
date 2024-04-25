@@ -22,19 +22,24 @@
     description = "An average platinum price calculator for tradeable items in Warframe."
     documentation = "https://warmac.readthedocs.io/en/"
     # include = [""]
-    keywords    = ["platinum", "warframe calculator", "warframe market", "warframe"]
-    license     = "MIT"
+    keywords = [
+        "platinum",
+        "warframe calculator",
+        "warframe market",
+        "warframe",
+    ]
+    license = "MIT"
     maintainers = ["Noah Jenner <noah.jenner@proton.me>"]
-    name        = "WarMAC"
-    packages    = [{include = "warmac"}]
-    readme      = "README.md"
-    repository  = "https://github.com/Eutropios/WarMAC"
-    version     = "0.0.5"
+    name = "WarMAC"
+    packages = [{include = "warmac"}]
+    readme = "README.md"
+    repository = "https://github.com/Eutropios/WarMAC"
+    version = "0.0.5"
     [tool.poetry.dependencies]
         python  = ">=3.8,<3.13"
         urllib3 = "^2.0.4"
     [tool.poetry.scripts]
-        warmac = "warmac.__init__:main"
+        warmac = "warmac.main:main"
     [tool.poetry.urls]
         "Bug Tracker" = "https://github.com/Eutropios/WarMAC/issues"
     [tool.poetry.group.dev]
@@ -42,7 +47,7 @@
         [tool.poetry.group.dev.dependencies]
             esbonio    = ">=0.16,<1"
             pipdeptree = "^2.13"
-            pytest     = "^8"
+            pytest     = "^8.1"
             vermin     = "^1.6"
             viztracer  = ">=0.16,<1"
 [tool.poetry.group.docs]
@@ -180,7 +185,9 @@
         [tool.ruff.lint.per-file-ignores]
             "docs/source/conf.py" = ["D100", "D104", "I002", "INP001"]
             "tests/__init__.py"   = ["D100", "D104", "I002"]
+            "warmac/__init__.py"  = ["D100", "D104", "I002"]
             "warmac/__main__.py"  = ["D100", "D104", "I002"]
+
 
         [tool.ruff.lint.pycodestyle]
             max-doc-length = 72

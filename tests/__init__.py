@@ -1,6 +1,7 @@
 """
-warmac.__main__
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
+Warframe Tests
+~~~~~~~~~~~~~~
 
 WarMAC — https://github.com/Eutropios/WarMAC
 Copyright (C) 2024  Noah Jenner
@@ -20,11 +21,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 -----------------------------------------------------------------------
 
-Entry point for console when `python -m warmac` is called.
+Obligatory file for unittest to function.
 """  # noqa: D205, D400
 
-import sys
+from tests import test_average, test_cli_parser, test_main
 
-from warmac import main
-
-sys.exit(main.main())
+__all__ = ["test_average", "test_cli_parser", "test_main"]

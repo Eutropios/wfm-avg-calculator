@@ -1,14 +1,25 @@
 """
 warmac.cli_parser
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
-Copyright (c) 2023 Noah Jenner under MIT License
-Please see LICENSE.txt for additional licensing information.
+WarMAC — https://github.com/Eutropios/WarMAC
+Copyright (C) 2024  Noah Jenner
 
-File that contains the argument parser for WarMAC.
-For information on the main program, please see __init__.py
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Date of Creation: June 7, 2023
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+-----------------------------------------------------------------------
+
+Command line interface logic for warmac.
 """  # noqa: D205, D400
 
 from __future__ import annotations
@@ -21,12 +32,14 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from collections.abc import Generator
-    from typing import Final, NoReturn
+    from typing import Final, NoReturn, Sequence
 
-#: The default time to collect orders until
+# The default time to collect orders until
 DEFAULT_TIME: Final = 10
-#: The current version of WarMAC
+# The current version of WarMAC
 _VERSION: Final = "0.0.5"
+# A dictionary of all possible subcommands
+_POSSIBLE_SUBCOMMANDS = ("average", "help")
 
 
 class CustomHelpFormat(argparse.RawDescriptionHelpFormatter):
@@ -186,7 +199,7 @@ def _create_parser() -> WarMACParser:
     # Min width that help text should take up in usage
     help_min_width: Final = 34
     # Min value of help_min_width and terminal's width
-    default_width: Final = min(help_min_width, shutil.get_terminal_size().columns - 2)
+    default_width = min(help_min_width, shutil.get_terminal_size().columns - 2)
     # Platforms the user can choose from
     platforms: Final = ("pc", "ps4", "xbox", "switch")
 
@@ -249,14 +262,15 @@ def _create_parser() -> WarMACParser:
     # ---- Average default settings ----
 
     # The statistic types that the average command can use
-    avg_funcs = ("median", "mean", "mode", "geometric")
+    avg_funcs: Final = ("median", "mean", "mode", "geometric")
     # The maximum time range that the average command can pull from
-    max_time_range = 60
+    max_time_range: Final = 60
 
     # Option characters used: s, p, t, m, r, b, v, h
 
     avg_parser.add_argument(
         "item",
+        nargs="+",
         type=lambda s: s.strip(),
         help=(
             "Item to find the statistic of. If the item spans multiple words, please"
@@ -304,28 +318,27 @@ def _create_parser() -> WarMACParser:
         metavar="<days>",
         dest="timerange",
     )
-    max_or_rad = avg_parser.add_mutually_exclusive_group()
 
-    max_or_rad.add_argument(
+    avg_parser.add_argument(
         "-m",
         "--maxrank",
         action="store_true",
         help=(
             "Calculate the price statistic of the mod/arcane at its maximum rank "
-            "instead of when it is unranked. Cannot be used together with the --radiant"
-            " option."
+            "instead of when it is unranked. Does nothing if used with an item that is "
+            "not a mod."
         ),
         dest="maxrank",
     )
 
-    max_or_rad.add_argument(
+    avg_parser.add_argument(
         "-r",
         "--radiant",
         action="store_true",
         help=(
             "Calculate the price statistic of the relic at a radiant refinement instead"
-            " of at an intact refinement. Cannot be used together with the --maxrank "
-            "option."
+            " of at an intact refinement. Does nothing if used with an item that is not"
+            " a relic."
         ),
         dest="radiant",
     )
@@ -362,7 +375,7 @@ def _create_parser() -> WarMACParser:
     return parser
 
 
-def handle_input() -> argparse.Namespace:
+def handle_input(args: Sequence[str] | None = None) -> argparse.Namespace:
     """
     Create a :py:class:`.WarMACParser` and parse arguments.
 
@@ -371,10 +384,11 @@ def handle_input() -> argparse.Namespace:
     :py:class:`argparse.Namespace` object. Exits early if only "warmac"
     is called.
 
+    :param args: Substituted command line arguments, defaults to None
     :return: The parsed command-line arguments.
     """
     parser = _create_parser()
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         sys.exit(1)
-    return parser.parse_args()
+    return parser.parse_args(args)

@@ -35,7 +35,7 @@ mods, and arcane enhancements.
 - [Installation](#installation)
 - [Usage](#usage)
 - [Documentation](#documentation)
-- [Upcoming Features](#upcoming-features)
+<!--- [Upcoming Features](#upcoming-features)-->
 - [Contributing](#contributing)
 - [Acknowledgements](#acknowledgements)
 - [Licensing](#licensing)
@@ -112,7 +112,7 @@ program can be viewed by running `warmac --help`.
 To view a specific command's usage from the command line, simply run:
 `warmac <command> --help`
 
-For example, to view the usage for the average command, users should run:
+To view the usage for the average command, users should run:
 `warmac average --help`
 
 ### Handling WarMAC Output
@@ -159,10 +159,10 @@ warmac average -s mode -m bite
 Full documentation for installation, usage, and contribution guidelines can be
 found [here](https://warmac.readthedocs.io/en/).
 
-## Upcoming Features<a id="upcoming-features"></a>
+<!-- ## Upcoming Features<a id="upcoming-features"></a>
 
 - Adding file input
-- Adding even more commands to WarMAC!
+- Adding even more commands to WarMAC! -->
 
 ## Contributing<a id="contributing"></a>
 
@@ -193,10 +193,10 @@ WarMAC is packaged using [Poetry](https://github.com/python-poetry/poetry).
 
 ***This project is NOT affiliated with Warframe, Digital Extremes, or Warframe Market***
 
-Copyright (c) 2023 Noah Jenner under MIT License
+Copyright (C) 2024  Noah Jenner under GNU GPL version 3.0-or-later
 
-*For additional licensing information, please see [`LICENSE.txt`](https://github.com/Eutropios/WarMAC/blob/main/LICENSE.txt)*\
-*For licensing regarding urllib3, please see [`LICENSE-urllib3.txt`](https://github.com/Eutropios/WarMAC/blob/main/LICENSE-urllib3.txt)*
+*The full detials of the license can be found at [`LICENSE.txt`](https://github.com/Eutropios/WarMAC/blob/main/LICENSES/LICENSE.txt)*
+*For licensing regarding urllib3, please see [`LICENSE-urllib3.txt`](https://github.com/Eutropios/WarMAC/blob/main/LICENSES/LICENSE-urllib3.txt)*
 
 ## Authors
 
