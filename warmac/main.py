@@ -27,7 +27,7 @@ from __future__ import annotations
 import sys
 from typing import TYPE_CHECKING
 
-# from warmac import cli_parser
+from warmac import cli_parser
 
 if TYPE_CHECKING:
     # import argparse
@@ -52,6 +52,8 @@ def main() -> Literal[0]:
     :return: Return 0 if everything returns successfully.
     """  # noqa: D205
     # command_select(cli_parser.handle_input())
+    cli_args = cli_parser.handle_input()
+    print(cli_args)
     return 0
 
 

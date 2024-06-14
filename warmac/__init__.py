@@ -22,8 +22,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -----------------------------------------------------------------------
 
 Module information of warmac.
-Describes what modules are visible to the end-user.
+Describes what modules are visible for imports.
 """  # noqa: D205, D400
+
+from __future__ import annotations
 
 from warmac import average, cli_parser, main
 

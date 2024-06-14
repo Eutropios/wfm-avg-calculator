@@ -8,7 +8,8 @@
         "Development Status :: 4 - Beta",
         "Environment :: Console",
         "Intended Audience :: End Users/Desktop",
-        "License :: OSI Approved :: MIT License",
+        "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+        "Natural Language :: English",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
@@ -28,7 +29,7 @@
         "warframe market",
         "warframe",
     ]
-    license = "MIT"
+    license = "GPL-3.0-or-later"
     maintainers = ["Noah Jenner <noah.jenner@proton.me>"]
     name = "WarMAC"
     packages = [{include = "warmac"}]
@@ -46,16 +47,18 @@
         optional = true
         [tool.poetry.group.dev.dependencies]
             esbonio    = ">=0.16,<1"
-            pipdeptree = "^2.13"
-            pytest     = "^8.1"
+            pipdeptree = "^2.13"     # watch this dependency as it pulls in pip
+            pytest     = "^8.1"      # large dependency, watch for size
             vermin     = "^1.6"
             viztracer  = ">=0.16,<1"
 [tool.poetry.group.docs]
     optional = true
     [tool.poetry.group.docs.dependencies]
-        furo = ">=2023.9"
-        sphinx = [
-            {version = ">=6,<7.2", python = "~3.8"},
+        # building docs should preferably be done with python 3.12 and Sphinx 7.3
+        docutils = ">=0.18.1,<=0.20.1" # Don't update dependency until 3.8 EOL, Python version blocker
+        furo = ">=2023.9" # Update this dependency when 3.8 EOL, no blockers
+        sphinx = [ # lower bound set due to furo.
+            {version = ">=6,<7.2", python = "~3.8"},      # sphinx 7.2 drops python 3.8 support
             {version = ">=6,<8", python = ">=3.9,<3.13"},
         ]
         sphinx-copybutton = ">=0.5.2,<1"
@@ -146,20 +149,21 @@
         skip-magic-trailing-comma = false
 
     [tool.ruff.lint]
+        # NOTE: Some rules are turned off by Ruff due to setting `target-version` to Py 3.8
         explicit-preview-rules = false
         ignore = [
-            "AIR",
-            "COM812",
-            "DJ",
-            "ERA001",
-            "FIX",
-            "ISC001",
-            "ISC002",
-            "NPY",
-            "PD",
-            "SLF001",
-            "T20",
+            "AIR",    # Apache Airflow (What even is this?)
+            "COM812", # Must be turned off for formatter
+            "DJ",     # Django rules (N/A for project)
+            "ERA001", # Commented out code (I do this during development, the warning is annoying)
+            "FIX",    # To-do comments (I don't use these)
+            "ISC001", # Must be turned off for formatter
+            "ISC002", # Must be turned off for formatter
+            "NPY",    # Numpy rules (N/A for project)
+            "PD",     # Pandas rules (N/A for project)
+            "T20",    # This ruleset flags printing, which my program inherently does
         ]
+        preview = true
         select = ["ALL"]
 
         [tool.ruff.lint.flake8-copyright]
@@ -187,6 +191,8 @@
             "tests/__init__.py"   = ["D100", "D104", "I002"]
             "warmac/__init__.py"  = ["D100", "D104", "I002"]
             "warmac/__main__.py"  = ["D100", "D104", "I002"]
+            # *IMPORTANT* - A dirty hack in cli_parser.py uses private components
+            "warmac/cli_parser.py" = ["SLF001"]
 
 
         [tool.ruff.lint.pycodestyle]

@@ -38,8 +38,6 @@ if TYPE_CHECKING:
 DEFAULT_TIME: Final = 10
 # The current version of WarMAC
 _VERSION: Final = "0.0.5"
-# A dictionary of all possible subcommands
-_POSSIBLE_SUBCOMMANDS = ("average", "help")
 
 
 class CustomHelpFormat(argparse.RawDescriptionHelpFormatter):
@@ -270,7 +268,6 @@ def _create_parser() -> WarMACParser:
 
     avg_parser.add_argument(
         "item",
-        nargs="+",
         type=lambda s: s.strip(),
         help=(
             "Item to find the statistic of. If the item spans multiple words, please"
@@ -318,27 +315,28 @@ def _create_parser() -> WarMACParser:
         metavar="<days>",
         dest="timerange",
     )
+    max_or_rad = avg_parser.add_mutually_exclusive_group()
 
-    avg_parser.add_argument(
+    max_or_rad.add_argument(
         "-m",
         "--maxrank",
         action="store_true",
         help=(
             "Calculate the price statistic of the mod/arcane at its maximum rank "
             "instead of when it is unranked. Does nothing if used with an item that is "
-            "not a mod."
+            "not a mod. Cannot be used together with the --radiant option."
         ),
         dest="maxrank",
     )
 
-    avg_parser.add_argument(
+    max_or_rad.add_argument(
         "-r",
         "--radiant",
         action="store_true",
         help=(
             "Calculate the price statistic of the relic at a radiant refinement instead"
             " of at an intact refinement. Does nothing if used with an item that is not"
-            " a relic."
+            " a relic. Cannot be used together with the --maxrank option."
         ),
         dest="radiant",
     )
@@ -372,6 +370,42 @@ def _create_parser() -> WarMACParser:
         help="Show this message and exit.",
     )
 
+    # ---- Help Subcommand ----
+
+    help_parser = subparsers.add_parser(
+        "help",
+        help="Show help for subcommands.",
+        description=(
+            "Show help for subcommands. A subcommand can be passed to receive help text"
+            " on that subparser."
+        ),
+        formatter_class=lambda prog: CustomHelpFormat(
+            prog=prog,
+            max_help_position=default_width,
+            # prog refers to the first argument passed in the command
+            # line, which is the name of the file in this case.
+        ),
+        add_help=False,
+        usage="warmac help subcommand",
+    )
+    _possible_subcommands = ("average", "help")
+
+    help_parser.add_argument(
+        "subcommand",
+        type=lambda s: s.strip().lower(),
+        choices=_possible_subcommands,
+        nargs="?",
+        help="Subcommand to show help for.",
+        metavar="subcommand",
+    )
+
+    help_parser.add_argument(
+        "-h",
+        "--help",
+        action="help",
+        help="Show this message and exit.",
+    )
+
     return parser
 
 
@@ -391,4 +425,11 @@ def handle_input(args: Sequence[str] | None = None) -> argparse.Namespace:
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         sys.exit(1)
-    return parser.parse_args(args)
+    parsed_args = parser.parse_args(args)
+    if parsed_args.subparser == "help":
+        if parsed_args.subcommand:
+            # This returns nothing. It exits after printing help
+            parser.parse_args([parsed_args.subcommand, "--help"])
+        parser.print_help(sys.stderr)
+        sys.exit(1)
+    return parsed_args
