@@ -416,7 +416,7 @@ def handle_input(args: Sequence[str] | None = None) -> argparse.Namespace:
     Create :py:class:`.WarMACParser` object, parse command-line
     arguments, and return the parsed arguments as an
     :py:class:`argparse.Namespace` object. Exits early if only "warmac"
-    is called.
+    is called or if the subcommand "help" is used.
 
     :param args: Substituted command line arguments, defaults to None
     :return: The parsed command-line arguments.

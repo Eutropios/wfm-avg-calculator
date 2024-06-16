@@ -35,7 +35,6 @@ mods, and arcane enhancements.
 - [Installation](#installation)
 - [Usage](#usage)
 - [Documentation](#documentation)
-<!--- [Upcoming Features](#upcoming-features)-->
 - [Contributing](#contributing)
 - [Acknowledgements](#acknowledgements)
 - [Licensing](#licensing)
@@ -76,7 +75,7 @@ You can ensure that you've installed WarMAC correctly by calling its help page
 like so:
 
 ```bash
-warmac --version
+warmac --help
 ```
 
 ### Using Poetry
@@ -159,11 +158,6 @@ warmac average -s mode -m bite
 Full documentation for installation, usage, and contribution guidelines can be
 found [here](https://warmac.readthedocs.io/en/).
 
-<!-- ## Upcoming Features<a id="upcoming-features"></a>
-
-- Adding file input
-- Adding even more commands to WarMAC! -->
-
 ## Contributing<a id="contributing"></a>
 
 Contributions are welcome. The expected development stack that you will use
@@ -180,12 +174,8 @@ to change in the future.
 
 In addition to the tools listed in [`.pre-commit-config.yaml`](https://github.com/Eutropios/WarMAC/blob/main/.pre-commit-config.yaml)
 and [`pyproject.toml`](https://github.com/Eutropios/WarMAC/blob/main/pyproject.toml),
-this project uses the following tools in its development:
-
-- [autoDocstring](https://github.com/NilsJPWerner/autoDocstring)
-- [Taplo and the Even Better TOML extension](https://github.com/tamasfe/taplo)
-- [markdownlint](https://github.com/DavidAnson/vscode-markdownlint)
-- [vermin](https://github.com/netromdk/vermin)
+this project also uses [Taplo](https://github.com/tamasfe/taplo) in its
+development.
 
 WarMAC is packaged using [Poetry](https://github.com/python-poetry/poetry).
 
@@ -195,8 +185,8 @@ WarMAC is packaged using [Poetry](https://github.com/python-poetry/poetry).
 
 Copyright (C) 2024  Noah Jenner under GNU GPL version 3.0-or-later
 
-*The full detials of the license can be found at [`LICENSE.txt`](https://github.com/Eutropios/WarMAC/blob/main/LICENSES/LICENSE.txt)*
-*For licensing regarding urllib3, please see [`LICENSE-urllib3.txt`](https://github.com/Eutropios/WarMAC/blob/main/LICENSES/LICENSE-urllib3.txt)*
+*The full details of the license can be found at [`LICENSE.txt`](https://github.com/Eutropios/WarMAC/blob/main/LICENSES/LICENSE.txt)*
+*For licensing regarding any dependencies, please see [`LICENSES/](https://github.com/Eutropios/WarMAC/blob/main/LICENSES/)*
 
 ## Authors
 
