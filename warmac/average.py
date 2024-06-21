@@ -24,3 +24,28 @@ Logic for average subcommand.
 """  # noqa: D205, D400
 
 from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import TypedDict
+
+    class AverageArgs(TypedDict):
+        """
+        Typings for argparse.Namespace object for average subcommand.
+
+        :param TypedDict: Inherits from TypedDict
+        """
+
+        # TODO(Noah): Add docstring to this class, note down members
+        subparser: str
+        item: str
+        statistic: str
+        platform: str
+        timerange: int
+        maxrank: bool
+        radiant: bool
+        use_buyers: bool
+        detailed_report: bool
+
+# pass args in, then type hint the value here with AverageArgs
