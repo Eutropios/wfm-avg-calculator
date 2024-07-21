@@ -431,5 +431,6 @@ def handle_input(args: Sequence[str] | None = None) -> argparse.Namespace:
             # This returns nothing. It exits after printing help
             parser.parse_args([parsed_args.subcommand, "--help"])
         parser.print_help(sys.stderr)
-        sys.exit(1)
+        sys.exit(0)
+
     return parsed_args

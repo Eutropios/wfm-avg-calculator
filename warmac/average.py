@@ -28,24 +28,19 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from typing import TypedDict
+    import argparse
 
-    class AverageArgs(TypedDict):
-        """
-        Typings for argparse.Namespace object for average subcommand.
 
-        :param TypedDict: Inherits from TypedDict
-        """
+def main(args: argparse.Namespace) -> float:
+    """
+    Calculate average price of an item from warframe.market.
 
-        # TODO(Noah): Add docstring to this class, note down members
-        subparser: str
-        item: str
-        statistic: str
-        platform: str
-        timerange: int
-        maxrank: bool
-        radiant: bool
-        use_buyers: bool
-        detailed_report: bool
+    :param args: Parsed command-line args.
+    :return: Average price of item.
+    """
+    print(args.item)  # NOTE: Just debug stuff
+    # do some validation with msgspec
+    return 0.1
+
 
 # pass args in, then type hint the value here with AverageArgs

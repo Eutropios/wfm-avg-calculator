@@ -27,16 +27,15 @@ from __future__ import annotations
 import sys
 from typing import TYPE_CHECKING
 
-from warmac import cli_parser
+from warmac import average, cli_parser
 
 if TYPE_CHECKING:
     # import argparse
     from typing import Literal
 
-# A dictionary of all possible commands
-# SUBCMD_TO_FUNC = {
-#    "average": warmac_avg.average,
-# }
+SUBCMD_TO_FUNC = {
+    "average": average.main,
+}
 
 
 def main() -> Literal[0]:
@@ -46,14 +45,14 @@ def main() -> Literal[0]:
 
     Call :py:func:`cli_parser.handle_input` to create and parse a
     :py:class:`cli_parser.WarMACParser`. Arguments are then used in
-    the script's execution, beginning by calling
-    :py:func:`.command_select` with the parsed arguments.
+    the script's execution.
 
     :return: Return 0 if everything returns successfully.
     """  # noqa: D205
     # command_select(cli_parser.handle_input())
     cli_args = cli_parser.handle_input()
-    print(cli_args)
+    output_val = SUBCMD_TO_FUNC[cli_args.subparser](cli_args)
+    print(output_val)
     return 0
 
 
