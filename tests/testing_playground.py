@@ -1,6 +1,6 @@
 """
-warmac.average
-~~~~~~~~~~~~~~
+tests.testing_playground
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 WarMAC — https://github.com/Eutropios/WarMAC
 Copyright (C) 2024  Noah Jenner
@@ -17,27 +17,13 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 -----------------------------------------------------------------------
 
-Logic for average subcommand.
+This file exists to test screw around with implementation details.
 """  # noqa: D205, D400
 
-from __future__ import annotations
+from warmac import cli_parser
 
-from typing import TYPE_CHECKING
+# print(cli_parser.int_checking("5", -1, 4, "timerange"))
 
-if TYPE_CHECKING:
-    import argparse
-
-
-def main(args: argparse.Namespace) -> float:
-    """
-    Calculate average price of an item from warframe.market.
-
-    :param args: Parsed command-line args.
-    :return: Average price of item.
-    """
-    print(args.item)  # NOTE: Just debug stuff
-    # do some validation with msgspec
-    return 0.1
+print(cli_parser.int_checking("2", 2, 2))

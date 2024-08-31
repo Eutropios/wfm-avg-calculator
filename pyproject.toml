@@ -21,22 +21,26 @@
         "Topic :: Utilities",
         "Typing :: Typed",
     ]
-    description = "An average platinum price calculator for tradeable items in Warframe."
+
+    description   = "An average platinum price calculator for tradeable items in Warframe."
     documentation = "https://warmac.readthedocs.io/en/"
     # include = [""]
+
     keywords = [
         "platinum",
         "warframe calculator",
         "warframe market",
         "warframe",
     ]
-    license = "GPL-3.0-or-later"
+
+    license     = "GPL-3.0-or-later"
     maintainers = ["Noah Jenner <noah.jenner@proton.me>"]
-    name = "WarMAC"
-    packages = [{include = "warmac"}]
-    readme = "README.md"
-    repository = "https://github.com/Eutropios/WarMAC"
-    version = "0.0.5"
+    name        = "WarMAC"
+    packages    = [{include = "warmac"}]
+    readme      = "README.md"
+    repository  = "https://github.com/Eutropios/WarMAC"
+    version     = "0.0.5"
+
     [tool.poetry.dependencies]
         python  = ">=3.8,<3.13"
         urllib3 = "^2.0.4"
@@ -49,24 +53,42 @@
         [tool.poetry.group.dev.dependencies]
             esbonio    = ">=0.16,<1"
             pipdeptree = "^2.13"     # watch this dependency as it pulls in pip
-            pytest     = "^8.1"      # large dependency, watch for size
             vermin     = "^1.6"
             viztracer  = ">=0.16,<1"
+
 [tool.poetry.group.docs]
     optional = true
     [tool.poetry.group.docs.dependencies]
-        # building docs should preferably be done with python 3.12 and Sphinx 7.3
-        docutils = ">=0.18.1,<=0.20.1" # Don't update dependency until 3.8 EOL, Python version blocker
-        furo = ">=2023.9" # Update this dependency when 3.8 EOL, no blockers
-        sphinx = [ # lower bound set due to furo.
-            {version = ">=6,<7.2", python = "~3.8"},      # sphinx 7.2 drops python 3.8 support
-            {version = ">=6,<8", python = ">=3.9,<3.13"},
+        sphinx = [
+            {version = ">=7.2,<8", python = "~3.9"},
+            {version = "^8", python = ">=3.10,<3.13"},
         ]
-        sphinx-copybutton = ">=0.5.2,<1"
-        sphinx-inline-tabs = ">=2023.4.21"
-        sphinx-lint = ">=0.9,<1"
-        sphinx-notfound-page = "^1"
+
+        docutils                   = ">=0.18.1"
+        furo                       = ">=2023.9"
+        python                     = ">=3.10,<3.13"
+        sphinx-copybutton          = ">=0.5.2,<1"
+        sphinx-inline-tabs         = ">=2023.4.21"
+        sphinx-lint                = ">=0.9,<1"
+        sphinx-notfound-page       = "^1"
         sphinx_last_updated_by_git = ">=0.3.6,<1"
+
+[tool.poetry.group.test]
+    optional = true
+    [tool.poetry.group.test.dependencies]
+        coverage = "^7.6"
+        pytest   = "^8.1" # large dependency, watch for size
+
+[tool.coverage]
+    [tool.coverage.run]
+        command_line = "-m pytest -v ./tests"
+    [tool.coverage.report]
+        exclude_also = [
+            # Don't complain if non-runnable code isn't run:
+            "if TYPE_CHECKING:",
+            "if __name__ == .__main__.:",
+        ]
+        precision = 2
 
 [tool.docformatter]
     black               = true
@@ -101,12 +123,14 @@
         "buck-out",
         "build",
         "dist",
+        "htmlcov",
         "node_modules",
         "site-packages",
         "venv",
     ]
+
     python_version = "3.12"
-    strict = true
+    strict         = true
 
 [tool.ruff]
     indent-width   = 4
@@ -140,33 +164,36 @@
             "buck-out",
             "build",
             "dist",
+            "htmlcov",
             "node_modules",
             "site-packages",
             "venv",
         ]
-        indent-style = "space"
-        line-ending = "auto"
-        quote-style = "double"
+
+        indent-style              = "space"
+        line-ending               = "auto"
+        quote-style               = "double"
         skip-magic-trailing-comma = false
 
     [tool.ruff.lint]
-        # NOTE: Some rules are turned off by Ruff due to setting `target-version` to Py 3.8
+        # NOTE: Some rules are turned off by Ruff due to `target-version` to Py 3.8
         explicit-preview-rules = false
         ignore = [
-            "AIR",    # Apache Airflow (What even is this?)
+            "AIR",    # Apache Airflow (What even is this?).
             "COM812", # Must be turned off for formatter
             "DJ",     # Django rules (N/A for project)
+            "DOC",    # Turn this off for now until DOC supports sphinx-style
             "ERA001", # Commented out code (I do this during development, the warning is annoying)
-            "FIX",
+            "FAST",   # FastAPI rules (N/A for project)
+            "FIX",    # I don't use this
             "ISC001", # Must be turned off for formatter
             "ISC002", # Must be turned off for formatter
             "NPY",    # Numpy rules (N/A for project)
             "PD",     # Pandas rules (N/A for project)
             "T20",    # This ruleset flags printing, which my program inherently does
-            "TD003",
-
+            "TD",     # I don't do TODOs
         ]
-        # NOTE: Some rules are turned off by Ruff due to setting `target-version` to Py 3.8
+
         preview = true
         select  = ["ALL"]
 
@@ -188,16 +215,15 @@
             required-imports = ["from __future__ import annotations"]
 
         [tool.ruff.lint.mccabe]
-            max-complexity = 7
+            max-complexity = 5
 
         [tool.ruff.lint.per-file-ignores]
-            "docs/source/conf.py" = ["D100", "D104", "I002", "INP001"]
-            "tests/__init__.py"   = ["D100", "D104", "I002"]
-            "warmac/__init__.py"  = ["D100", "D104", "I002"]
-            "warmac/__main__.py"  = ["D100", "D104", "I002"]
-            # *IMPORTANT* - A dirty hack in cli_parser.py uses private components
+            "docs/source/conf.py"  = ["D100", "D104", "I002", "INP001"]
+            "tests/**.py"          = ["D103", "I002", "S101"]
+            "warmac/__init__.py"   = ["D100", "D104", "I002"]
+            "warmac/__main__.py"   = ["D100", "D104", "I002"]
             "warmac/cli_parser.py" = ["SLF001"]
-
+            # *IMPORTANT* - A dirty hack in cli_parser.py uses private components
 
         [tool.ruff.lint.pycodestyle]
             max-doc-length = 72

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 install-deps() {
-    poetry install --sync --with dev,docs
+    poetry install --sync --with dev,docs,test
 }
 
 install-deps

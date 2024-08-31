@@ -138,24 +138,27 @@ class CustomHelpFormat(argparse.RawDescriptionHelpFormatter):
             yield from super()._iter_indented_subactions(action)
 
 
-def _int_checking(usr_inp: str, max_val: int) -> int:
+def int_checking(val: str, min_val: int = 1, max_val: int = 1) -> int:
     """
-    Return ``usr_inp`` as an integer if ``0 <= usr_inp < max_val``.
+    Return ``val`` as an integer if ``min_val <= val <=  max_val``.
 
-    Cast ``usr_inp`` to an integer. If ``usr_inp`` is not an integer or
-    is not ``0 < usr_inp <= max_val``, then raise an
+    Cast ``val`` to an integer. If ``val`` is not an integer or
+    is not ``min_val <= val <= max_val``, then raise an
     :py:exc:`argparse.ArgumentTypeError`.
 
-    :param usr_inp: The user's input as a string.
-    :param max_val: The maximum value that ``int(usr_inp)`` can be.
-    :raises argparse.ArgumentTypeError: Raised if ``usr_inp`` is not an
-        integer or is not ``0 < int(usr_inp) <= max_val``.
-    :return: Return ``usr_inp`` as an integer.
+    :param val: The user's input as a string.
+    :param min_val: The minimum value that ``int(val)`` can be,
+        defaults to 1.
+    :param max_val: The maximum value that ``int(val)`` can be,
+        defaults to 1.
+    :raises argparse.ArgumentTypeError: Raised if ``val`` is not an
+        integer or is not ``min_val <= int(val) <= max_val``.
+    :return: Return ``val`` as an integer.
     """
     with contextlib.suppress(ValueError):
-        if 0 < (casted_int := int(usr_inp)) <= max_val:
+        if min_val <= (casted_int := int(val)) <= max_val:
             return casted_int
-    msg = f'Input "{usr_inp}" must be an integer between 1 and {max_val}.'
+    msg = f'"{val}" is not an integer in the valid range of [{min_val}, {max_val}].'
     raise argparse.ArgumentTypeError(msg)
 
 
@@ -200,6 +203,7 @@ def _create_parser() -> WarMACParser:
     default_width = min(help_min_width, shutil.get_terminal_size().columns - 2)
     # Platforms the user can choose from
     platforms: Final = ("pc", "ps4", "xbox", "switch")
+    # NOTE: Consider making platforms a parameter of the function
 
     parser = WarMACParser(
         usage="warmac <command> [options]",
@@ -261,8 +265,12 @@ def _create_parser() -> WarMACParser:
 
     # The statistic types that the average command can use
     avg_funcs: Final = ("median", "mean", "mode", "geometric")
-    # The maximum time range that the average command can pull from
+    # The minimum time that int_checking checks against
+    min_time_range: Final = 1
+    # The maximum time that int_checking checks against
     max_time_range: Final = 60
+    # NOTE: Potential to make function more "pure" by passing these two
+    # variables in as parameters. A config file may help too.
 
     # Option characters used: s, p, t, m, r, b, v, h
 
@@ -306,11 +314,11 @@ def _create_parser() -> WarMACParser:
         "-t",
         "--timerange",
         default=DEFAULT_TIME,
-        type=lambda x: _int_checking(x, max_time_range),
+        type=lambda x: int_checking(x, min_time_range, max_time_range),
         help=(
             "Number of days to consider for calculating the average. Value given "
             "indicates how far back to start the statistic's calculation. Must be in "
-            f"range [1, {max_time_range}]. (Default: {DEFAULT_TIME})"
+            f"range [{min_time_range}, {max_time_range}]. (Default: {DEFAULT_TIME})"
         ),
         metavar="<days>",
         dest="timerange",
@@ -422,7 +430,7 @@ def handle_input(args: Sequence[str] | None = None) -> argparse.Namespace:
     :return: The parsed command-line arguments.
     """
     parser = _create_parser()
-    if len(sys.argv) == 1:
+    if not args and len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         sys.exit(1)
     parsed_args = parser.parse_args(args)
