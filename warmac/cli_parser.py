@@ -32,7 +32,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from collections.abc import Generator
-    from typing import Final, NoReturn, Sequence
+    from typing import Final, NoReturn
 
 # The default time to collect orders until
 DEFAULT_TIME: Final = 10
@@ -138,27 +138,25 @@ class CustomHelpFormat(argparse.RawDescriptionHelpFormatter):
             yield from super()._iter_indented_subactions(action)
 
 
-def int_checking(val: str, min_val: int = 1, max_val: int = 1) -> int:
+def str_to_int_bounds_check(val: str, min_val: int, max_val: int) -> int:
     """
-    Return ``val`` as an integer if ``min_val <= val <=  max_val``.
+    Return ``val`` as an integer if ``min_val <= val <  max_val``.
 
     Cast ``val`` to an integer. If ``val`` is not an integer or
-    is not ``min_val <= val <= max_val``, then raise an
+    is not ``min_val <= val < max_val``, then raise an
     :py:exc:`argparse.ArgumentTypeError`.
 
     :param val: The user's input as a string.
-    :param min_val: The minimum value that ``int(val)`` can be,
-        defaults to 1.
-    :param max_val: The maximum value that ``int(val)`` can be,
-        defaults to 1.
+    :param min_val: The minimum value that ``int(val)`` can be.
+    :param max_val: The maximum value that ``int(val)`` can be.
     :raises argparse.ArgumentTypeError: Raised if ``val`` is not an
-        integer or is not ``min_val <= int(val) <= max_val``.
+        integer or is not ``min_val <= int(val) < max_val``.
     :return: Return ``val`` as an integer.
     """
     with contextlib.suppress(ValueError):
-        if min_val <= (casted_int := int(val)) <= max_val:
+        if min_val <= (casted_int := int(val)) < max_val:
             return casted_int
-    msg = f'"{val}" is not an integer in the valid range of [{min_val}, {max_val}].'
+    msg = f'"{val}" is not an integer in the valid range of [{min_val}, {max_val}).'
     raise argparse.ArgumentTypeError(msg)
 
 
@@ -182,9 +180,9 @@ class WarMACParser(argparse.ArgumentParser):
             :py:class:`argparse.ArgumentParser` class.
         :return: A value is never returned by this function.
         """
-        self.exit(2, f"{self.usage}: error: {message}\n")
+        self.exit(1, f"{self.usage}: error: {message}\n")
         # change above code to print to stderr, then print cli help to
-        # stdout, then exit with code 2
+        # stdout, then exit with code 1
 
 
 def _create_parser() -> WarMACParser:
@@ -203,7 +201,6 @@ def _create_parser() -> WarMACParser:
     default_width = min(help_min_width, shutil.get_terminal_size().columns - 2)
     # Platforms the user can choose from
     platforms: Final = ("pc", "ps4", "xbox", "switch")
-    # NOTE: Consider making platforms a parameter of the function
 
     parser = WarMACParser(
         usage="warmac <command> [options]",
@@ -265,9 +262,9 @@ def _create_parser() -> WarMACParser:
 
     # The statistic types that the average command can use
     avg_funcs: Final = ("median", "mean", "mode", "geometric")
-    # The minimum time that int_checking checks against
+    # The minimum time that str_to_int_bounds_check checks against
     min_time_range: Final = 1
-    # The maximum time that int_checking checks against
+    # The maximum time that str_to_int_bounds_check checks against
     max_time_range: Final = 60
     # NOTE: Potential to make function more "pure" by passing these two
     # variables in as parameters. A config file may help too.
@@ -314,7 +311,7 @@ def _create_parser() -> WarMACParser:
         "-t",
         "--timerange",
         default=DEFAULT_TIME,
-        type=lambda x: int_checking(x, min_time_range, max_time_range),
+        type=lambda x: str_to_int_bounds_check(x, min_time_range, max_time_range),
         help=(
             "Number of days to consider for calculating the average. Value given "
             "indicates how far back to start the statistic's calculation. Must be in "
@@ -417,7 +414,7 @@ def _create_parser() -> WarMACParser:
     return parser
 
 
-def handle_input(args: Sequence[str] | None = None) -> argparse.Namespace:
+def handle_input(args: list[str] | None = None) -> argparse.Namespace:
     """
     Create a :py:class:`.WarMACParser` and parse arguments.
 
@@ -430,10 +427,10 @@ def handle_input(args: Sequence[str] | None = None) -> argparse.Namespace:
     :return: The parsed command-line arguments.
     """
     parser = _create_parser()
-    if not args and len(sys.argv) == 1:
+    parsed_args = parser.parse_args(args)
+    if not parsed_args.subparser:
         parser.print_help(sys.stderr)
         sys.exit(1)
-    parsed_args = parser.parse_args(args)
     if parsed_args.subparser == "help":
         if parsed_args.subcommand:
             # This returns nothing. It exits after printing help

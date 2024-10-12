@@ -24,6 +24,6 @@ This file exists to test screw around with implementation details.
 
 from warmac import cli_parser
 
-# print(cli_parser.int_checking("5", -1, 4, "timerange"))
-
-print(cli_parser.int_checking("2", 2, 2))
+# print(cli_parser.str_to_int_bounds_check("5", -1, 4, "timerange"))
+# cli_parser.handle_input(["average"])
+cli_parser.handle_input(["help", "average"])

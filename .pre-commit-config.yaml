@@ -1,23 +1,23 @@
 repos:
     - repo: https://github.com/DavidAnson/markdownlint-cli2
-      rev: "v0.13.0"
+      rev: "v0.14.0"
       hooks:
           - id: markdownlint-cli2
 
     - repo: https://github.com/abravalheri/validate-pyproject
-      rev: "v0.19"
+      rev: "v0.20.2"
       hooks:
           - id: validate-pyproject
 
-    - repo: https://github.com/PyCQA/docformatter
-      rev: "v1.7.5"
-      hooks:
-          - id: docformatter
-            additional_dependencies: [tomli]
-            args: [-i, -e ./tests]
+    #- repo: https://github.com/PyCQA/docformatter
+    #  rev: "v1.7.5"
+    #  hooks:
+    #      - id: docformatter
+    #        additional_dependencies: [tomli]
+    #        args: [-i, -e ./tests]
 
     - repo: https://github.com/astral-sh/ruff-pre-commit
-      rev: "v0.6.3"
+      rev: "v0.6.9"
       hooks:
           - id: ruff
             args: [--fix, --exit-non-zero-on-fix]
@@ -30,7 +30,7 @@ repos:
             args: [--strict, --ignore-missing-imports]
 
     - repo: https://github.com/pre-commit/pre-commit-hooks
-      rev: "v4.6.0"
+      rev: "v5.0.0"
       hooks:
           - id: check-ast
           - id: check-builtin-literals
@@ -39,4 +39,3 @@ repos:
           - id: check-yaml
           - id: detect-private-key
           - id: mixed-line-ending
-          - id: requirements-txt-fixer

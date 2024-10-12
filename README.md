@@ -41,7 +41,7 @@ mods, and arcane enhancements.
 
 ## Installation<a id="installation"></a> <!--This ensures PyPI compatibility-->
 
-WarMAC only supports Python versions 3.8 to 3.12. There are currently no plans
+WarMAC only supports Python versions 3.8 to 3.13. There are currently no plans
 to add support to Python 3.7
 
 ### Using pipx

@@ -15,7 +15,7 @@
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
-        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.13",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Utilities",
@@ -42,7 +42,7 @@
     version     = "0.0.5"
 
     [tool.poetry.dependencies]
-        python  = ">=3.8,<3.13"
+        python  = ">=3.8"
         urllib3 = "^2.0.4"
     [tool.poetry.scripts]
         warmac = "warmac.main:main"
@@ -51,27 +51,27 @@
     [tool.poetry.group.dev]
         optional = true
         [tool.poetry.group.dev.dependencies]
-            esbonio    = ">=0.16,<1"
-            pipdeptree = "^2.13"     # watch this dependency as it pulls in pip
-            vermin     = "^1.6"
-            viztracer  = ">=0.16,<1"
+            esbonio    = ">=0.16"
+            pipdeptree = "*"      # watch this dependency as it pulls in pip
+            vermin     = "*"
+            viztracer  = ">=0.16"
 
 [tool.poetry.group.docs]
     optional = true
     [tool.poetry.group.docs.dependencies]
         sphinx = [
             {version = ">=7.2,<8", python = "~3.9"},
-            {version = "^8", python = ">=3.10,<3.13"},
+            {version = "^8", python = ">=3.10"},
         ]
 
         docutils                   = ">=0.18.1"
         furo                       = ">=2023.9"
-        python                     = ">=3.10,<3.13"
-        sphinx-copybutton          = ">=0.5.2,<1"
+        python                     = ">=3.8"
+        sphinx-copybutton          = ">=0.5.2"
         sphinx-inline-tabs         = ">=2023.4.21"
-        sphinx-lint                = ">=0.9,<1"
-        sphinx-notfound-page       = "^1"
-        sphinx_last_updated_by_git = ">=0.3.6,<1"
+        sphinx-lint                = ">=1"
+        sphinx-notfound-page       = ">=1"
+        sphinx_last_updated_by_git = ">=0.3.6"
 
 [tool.poetry.group.test]
     optional = true
@@ -137,7 +137,7 @@
     line-length    = 88
     preview        = true
     show-fixes     = true
-    target-version = "py38"
+    target-version = "py39"
 
     [tool.ruff.format]
         exclude = [
@@ -176,7 +176,7 @@
         skip-magic-trailing-comma = false
 
     [tool.ruff.lint]
-        # NOTE: Some rules are turned off by Ruff due to `target-version` to Py 3.8
+        # NOTE: Some rules are turned off by Ruff due to `target-version` to Py 3.9
         explicit-preview-rules = false
         ignore = [
             "AIR",    # Apache Airflow (What even is this?).
@@ -219,7 +219,7 @@
 
         [tool.ruff.lint.per-file-ignores]
             "docs/source/conf.py"  = ["D100", "D104", "I002", "INP001"]
-            "tests/**.py"          = ["D103", "I002", "S101"]
+            "tests/**.py"          = ["D101", "D102", "D103", "I002", "S101"]
             "warmac/__init__.py"   = ["D100", "D104", "I002"]
             "warmac/__main__.py"   = ["D100", "D104", "I002"]
             "warmac/cli_parser.py" = ["SLF001"]

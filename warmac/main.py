@@ -31,14 +31,14 @@ from warmac import average, cli_parser
 
 if TYPE_CHECKING:
     # import argparse
-    from typing import Literal, Sequence
+    from typing import Literal
 
 SUBCMD_TO_FUNC = {
     "average": average.main,
 }
 
 
-def main(args: Sequence[str] | None = None) -> Literal[0]:
+def main(args: list[str] | None = None) -> Literal[0]:
     """
     Create a :py:data:`cli_parser.WarMACParser` and run associated
     command.
