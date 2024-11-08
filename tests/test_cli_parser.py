@@ -102,31 +102,38 @@ class TestIntCastInputParamTypes:
             cli_parser.str_to_int_bounds_check("None", 1, 10)
 
 
-class TestHelpCommandParsing:
+class TestHandleInputInterface:
     # exit code 1 when "warmac" is called
     @staticmethod
-    def test_function_bare_command_exit_code_one() -> None:
+    def test_bare_command_with_empty_list_exit_code_one() -> None:
+        with pytest.raises(SystemExit) as exit_code:
+            cli_parser.handle_input([])
+        assert exit_code.value.code == _EXIT_CODE_GENERIC_ERROR
+
+    # exit code 1 when "warmac" is called, dupe from above
+    @staticmethod
+    def test_bare_command__with_none_input_exit_code_one() -> None:
         with pytest.raises(SystemExit) as exit_code:
             cli_parser.handle_input()
         assert exit_code.value.code == _EXIT_CODE_GENERIC_ERROR
 
     # exit code 1 when "warmac average" is called
     @staticmethod
-    def test_function_bare_average_command_exit_code_one() -> None:
+    def test_bare_average_command_exit_code_one() -> None:
         with pytest.raises(SystemExit) as exit_code:
             cli_parser.handle_input(["average"])
         assert exit_code.value.code == _EXIT_CODE_GENERIC_ERROR
 
     # exit code 0 when "warmac help" is called
     @staticmethod
-    def test_function_bare_help_command_exit_code_zero() -> None:
+    def test_bare_help_command_exit_code_zero() -> None:
         with pytest.raises(SystemExit) as exit_code:
             cli_parser.handle_input(["help"])
         assert exit_code.value.code == _EXIT_CODE_ALL_GOOD
 
     # exit code 0 when "warmac help average" is called
     @staticmethod
-    def test_function_help_with_arg_exit_code_zero() -> None:
+    def test_help_with_arg_exit_code_zero() -> None:
         with pytest.raises(SystemExit) as exit_code:
             cli_parser.handle_input(["help", "average"])
         assert exit_code.value.code == _EXIT_CODE_ALL_GOOD
@@ -138,18 +145,56 @@ class TestHelpCommandParsing:
             cli_parser.handle_input(["--help"])
         assert exit_code.value.code == _EXIT_CODE_ALL_GOOD
 
+    # valid parsed content
+    @staticmethod
+    def test_valid_command_returns_parsed_args() -> None:
+        parsed_args = cli_parser.handle_input(["average", "bite"])
+        assert parsed_args.subparser == "average"
+        assert parsed_args.item == "bite"
+
 
 class TestStdlibMonkeyPatching:
+    # these checks need to be done because the internals are being
+    # altered and/or inherited from, which is inherently unsafe
+
     # argparse subcommand title is correct
-    # this check needs to be done because the internals are being
-    # altered which is inherently unsafe
     @staticmethod
     def test_positionals_header_is_correct() -> None:
         parser = cli_parser._create_parser()  # noqa: SLF001
         expected_title = "commands"
         assert parser._positionals.title == expected_title  # noqa: SLF001
 
-    # TODO: Add rest of monkeypatch tests
+    # _format_action_invocation returns proper metavar string for cli
+    # given an option with short and long form flags
+    @staticmethod
+    def test_overridden_format_action_invocation() -> None:
+        test_class = cli_parser.CustomHelpFormat(
+            "warmac <command> [options] average", 2, 34, None
+        )
+        some_action = argparse.Action(
+            option_strings=["-s", "--stats"],
+            dest="statistic",
+            metavar="<stat>",
+        )
+        desired_output = "-s, --stats <stat>"
+        assert test_class._format_action_invocation(some_action) == desired_output  # noqa: SLF001
+
+    # _format_action_invocation returns proper metavar string for cli
+    # given an option with only long form flag
+    @staticmethod
+    def test_overridden_format_action_invocation_no_short_form() -> None:
+        test_class = cli_parser.CustomHelpFormat(
+            "warmac <command> [options] average", 2, 34, None
+        )
+        some_action = argparse.Action(
+            option_strings=["--porcelain"],
+            dest="porcelain",
+            metavar=None,
+        )
+        desired_output = "--porcelain PORCELAIN"
+        assert test_class._format_action_invocation(some_action) == desired_output  # noqa: SLF001
+
+    # def
 
 
 if __name__ == "__main__":

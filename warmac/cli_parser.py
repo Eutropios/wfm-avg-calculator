@@ -42,9 +42,9 @@ _VERSION: Final = "0.0.5"
 
 class CustomHelpFormat(argparse.RawDescriptionHelpFormatter):
     """
-    Custom help formatter for :py:class:`cli_parser.WarMACParser`.
+    Custom help formatter for :class:`cli_parser.WarMACParser`.
 
-    Extend :py:class:`argparse.RawDescriptionHelpFormatter` to
+    Extend :class:`argparse.RawDescriptionHelpFormatter` to
     reimplement a few methods. Reimplementations include removing the
     command metavar tuples, removing the duplicate option metavars,
     and correcting the over-indentation on the help menu.
@@ -58,7 +58,7 @@ class CustomHelpFormat(argparse.RawDescriptionHelpFormatter):
         width: int | None = None,
     ) -> None:
         """
-        Construct a :py:class:`.CustomHelpFormat` object.
+        Construct a :class:`.CustomHelpFormat` object.
 
         :param prog: The name of the program.
         :param indent_increment: How much space should come before the
@@ -144,7 +144,7 @@ def str_to_int_bounds_check(val: str, min_val: int, max_val: int) -> int:
 
     Cast ``val`` to an integer. If ``val`` is not an integer or
     is not ``min_val <= val < max_val``, then raise an
-    :py:exc:`argparse.ArgumentTypeError`.
+    :exc:`argparse.ArgumentTypeError`.
 
     :param val: The user's input as a string.
     :param min_val: The minimum value that ``int(val)`` can be.
@@ -162,24 +162,19 @@ def str_to_int_bounds_check(val: str, min_val: int, max_val: int) -> int:
 
 class WarMACParser(argparse.ArgumentParser):
     """
-    Extend :py:class:`argparse.ArgumentParser` to reimplement the error
+    Extend :class:`argparse.ArgumentParser` to reimplement the error
     method.
-
-    Extend :py:class:`argparse.ArgumentParser` to reimplement the error
-    method so it exits with status code 2, and prints to stderr.
     """  # noqa: D205
 
     def error(self, message: str) -> NoReturn:
         """
-        Modify exit message for :py:class:`argparse.ArgumentError`.
-
-        Modify exit message for :py:class:`argparse.ArgumentError`
-        occurrences to print to stderr, and return an exit code of 2.
+        Modify exit message for :class:`argparse.ArgumentError`
+        occurrences to print to stderr, and return an exit code of 1.
 
         :param message: The message provided by the standard
-            :py:class:`argparse.ArgumentParser` class.
+            :class:`argparse.ArgumentParser` class.
         :return: A value is never returned by this function.
-        """
+        """  # noqa: D205
         self.exit(1, f"{self.usage}: error: {message}\n")
         # change above code to print to stderr, then print cli help to
         # stdout, then exit with code 1
@@ -189,12 +184,14 @@ def _create_parser() -> WarMACParser:
     """
     Create the command-line parser for the program.
 
-    Create a :py:class:`.WarMACParser` object that includes global
+    Create a :class:`.WarMACParser` object that includes global
     --help and --version options. Create subparsers for multiple
     commands to be used within the program.
 
-    :return: The constructed :py:class:`.WarMACParser` object.
+    :return: The constructed :class:`.WarMACParser` object.
     """
+    # These two variables inherently involve state, so it doesn't make
+    # much sense to have them be passed in as parameters
     # Min width that help text should take up in usage
     help_min_width: Final = 34
     # Min value of help_min_width and terminal's width
@@ -269,7 +266,7 @@ def _create_parser() -> WarMACParser:
     # NOTE: Potential to make function more "pure" by passing these two
     # variables in as parameters. A config file may help too.
 
-    # Option characters used: s, p, t, m, r, b, v, h
+    # Option characters used: s, p, t, m, r, b, d, h
 
     avg_parser.add_argument(
         "item",
@@ -328,8 +325,8 @@ def _create_parser() -> WarMACParser:
         action="store_true",
         help=(
             "Calculate the price statistic of the mod/arcane at its maximum rank "
-            "instead of when it is unranked. Does nothing if used with an item that is "
-            "not a mod. Cannot be used together with the --radiant option."
+            "instead of unranked. Does nothing if used with an item that is not a mod. "
+            "Cannot be used together with the --radiant option."
         ),
         dest="maxrank",
     )
@@ -366,6 +363,16 @@ def _create_parser() -> WarMACParser:
             "the specified parameters."
         ),
         dest="detailed_report",
+    )
+
+    avg_parser.add_argument(
+        "--porcelain",
+        action="store_true",
+        help=(
+            "Print numeric output separated with colons. If  passed without "
+            "--detail-report, --porcelain will be ignored."
+        ),
+        dest="porcelain",
     )
 
     avg_parser.add_argument(
@@ -416,26 +423,34 @@ def _create_parser() -> WarMACParser:
 
 def handle_input(args: list[str] | None = None) -> argparse.Namespace:
     """
-    Create a :py:class:`.WarMACParser` and parse arguments.
+    Create a :class:`.WarMACParser` and parse arguments.
 
-    Create :py:class:`.WarMACParser` object, parse command-line
+    Create :class:`.WarMACParser` object, parse command-line
     arguments, and return the parsed arguments as an
-    :py:class:`argparse.Namespace` object. Exits early if only "warmac"
-    is called or if the subcommand "help" is used.
+    :class:`argparse.Namespace` object. Exits early if only "warmac"
+    is called or if the subcommand "help" is used. Print to stderr if
+    only "warmac" or a bare subcommand (ex: "warmac average") is called
+    (excluding "help" subcommand). Print to stdout if "--help" option is
+    used, or if the help subcommand is called (even if it's bare).
 
     :param args: Substituted command line arguments, defaults to None
     :return: The parsed command-line arguments.
     """
     parser = _create_parser()
-    parsed_args = parser.parse_args(args)
-    if not parsed_args.subparser:
+
+    # If function is called with nothing and only "warmac" is called,
+    # or if an empty list is passed in with `handle_input`
+    if (not args and len(sys.argv) == 1) or args == []:
         parser.print_help(sys.stderr)
         sys.exit(1)
+
+    # parse args
+    parsed_args = parser.parse_args(args)
     if parsed_args.subparser == "help":
+        # user requested help text, so not being written to stderr
         if parsed_args.subcommand:
             # This returns nothing. It exits after printing help
             parser.parse_args([parsed_args.subcommand, "--help"])
-        parser.print_help(sys.stderr)
+        parser.print_help(sys.stdout)
         sys.exit(0)
-
     return parsed_args

@@ -40,11 +40,11 @@ SUBCMD_TO_FUNC = {
 
 def main(args: list[str] | None = None) -> Literal[0]:
     """
-    Create a :py:data:`cli_parser.WarMACParser` and run associated
+    Create a :data:`cli_parser.WarMACParser` and run associated
     command.
 
-    Call :py:func:`cli_parser.handle_input` to create and parse a
-    :py:class:`cli_parser.WarMACParser`. Arguments are then used in
+    Call :func:`cli_parser.handle_input` to create and parse a
+    :class:`cli_parser.WarMACParser`. Arguments are then used in
     the script's execution.
 
     :return: Return 0 if everything returns successfully.
