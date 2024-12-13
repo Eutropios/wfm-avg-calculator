@@ -93,7 +93,7 @@ class CustomHelpFormat(argparse.RawDescriptionHelpFormatter):
 
     def _format_action(self, action: argparse.Action) -> str:
         """
-        Remove command metavar tuple and fix metavar indentation.
+        Remove command metavar tuple.
 
         Override the ``HelpFormatter._format_action``
         method to remove the command metavar tuple and fix the
@@ -104,7 +104,6 @@ class CustomHelpFormat(argparse.RawDescriptionHelpFormatter):
             is a ``_SubParsersAction``, the metavar tuple will be
             excluded, and the leading indentation will be corrected.
         """
-        # Fix indentation for subclasses
         result = super()._format_action(action)
         return (
             f"{'':{self._current_indent}}{result.lstrip()}"
@@ -400,12 +399,12 @@ def _create_parser() -> WarMACParser:
         add_help=False,
         usage="warmac help subcommand",
     )
-    _possible_subcommands = ("average", "help")
+    possible_subcommands = ("average", "help")
 
     help_parser.add_argument(
         "subcommand",
         type=lambda s: s.strip().lower(),
-        choices=_possible_subcommands,
+        choices=possible_subcommands,
         nargs="?",
         help="Subcommand to show help for.",
         metavar="subcommand",

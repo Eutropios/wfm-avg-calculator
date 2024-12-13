@@ -25,6 +25,7 @@ Test file for cli_parser.py
 from __future__ import annotations
 
 import argparse
+import shutil
 import sys
 
 import pytest
@@ -164,37 +165,45 @@ class TestStdlibMonkeyPatching:
         expected_title = "commands"
         assert parser._positionals.title == expected_title  # noqa: SLF001
 
-    # _format_action_invocation returns proper metavar string for cli
-    # given an option with short and long form flags
     @staticmethod
-    def test_overridden_format_action_invocation() -> None:
-        test_class = cli_parser.CustomHelpFormat(
-            "warmac <command> [options] average", 2, 34, None
+    def test_overrideden_help_formatter() -> None:
+        help_min_width = 34
+        default_width = min(help_min_width, shutil.get_terminal_size().columns - 2)
+        some_parser = cli_parser.WarMACParser(
+            prog="progname",
+            usage="usage here",
+            description="some description",
+            formatter_class=lambda prog: cli_parser.CustomHelpFormat(
+                prog=prog,
+                max_help_position=default_width,
+            ),
+            add_help=False,
         )
-        some_action = argparse.Action(
-            option_strings=["-s", "--stats"],
-            dest="statistic",
-            metavar="<stat>",
-        )
-        desired_output = "-s, --stats <stat>"
-        assert test_class._format_action_invocation(some_action) == desired_output  # noqa: SLF001
 
-    # _format_action_invocation returns proper metavar string for cli
-    # given an option with only long form flag
-    @staticmethod
-    def test_overridden_format_action_invocation_no_short_form() -> None:
-        test_class = cli_parser.CustomHelpFormat(
-            "warmac <command> [options] average", 2, 34, None
+        subparsers = some_parser.add_subparsers(dest="subparser", metavar="")
+        subparsers.add_parser(
+            "stuff",
+            help="More stuff.",
+            formatter_class=lambda prog: cli_parser.CustomHelpFormat(
+                prog=prog,
+                max_help_position=default_width,
+            ),
+            add_help=False,
         )
-        some_action = argparse.Action(
-            option_strings=["--porcelain"],
-            dest="porcelain",
-            metavar=None,
-        )
-        desired_output = "--porcelain PORCELAIN"
-        assert test_class._format_action_invocation(some_action) == desired_output  # noqa: SLF001
 
-    # def
+        some_parser.add_argument(
+            "-h",
+            "--help",
+            action="help",
+            help="Show this message and exit.",
+        )
+        some_help = some_parser.format_help()
+        assert (
+            some_help
+            == "usage: usage here\n\nsome description\n\npositional arguments:\n"
+            "  stuff       More stuff.\n\noptions:\n  -h, --help  Show this message"
+            " and exit.\n"
+        )
 
 
 if __name__ == "__main__":
